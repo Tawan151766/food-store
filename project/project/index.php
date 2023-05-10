@@ -121,44 +121,53 @@ if (@$_SESSION['table_id'] == "") {
       <div class="modal-body">
         <div class="modal-title"><strong>รายการของฉัน</strong></div>
       <table class="table shadow mt-3 rounded text-center">
-  <thead>
-    <tr>
-      <th scope="col">ลำดับ</th>
-      <th scope="col">เมนูที่สั่ง</th>
-      <th scope="col">จำนวน</th>
-      <th scope="col">ราคา/ต่อจาน</th>
-      <th scope="col">Manage</th>
-      <!-- <th scope="col">จัดการรายละเอียดสินค้า</th> -->
-    </tr>
-  </thead>
-  <tbody>
-  <?php 
-  $table_id = $_SESSION['table_id'];
-  $sql = "SELECT * FROM `orders` INNER JOIN product ON orders.product_id = product.product_id WHERE orders.table_id = $table_id;";
-  $query = mysqli_query($connection, $sql);
-  $i = 1; ?>
-    <tr>
-    
-  <?php foreach ($query as $value) { ?>
-      <th scope="row"><?php echo $i++; ?></th>
-      <td><?php echo$value['product_name']?></td>
-      <td><?php echo$value['product_qty']?></td>
-      <td><?php echo$value['price']?></td>
-      <td>
-        <div class="btn-group" role="group" aria-label="Basic example">
-          <a href="delect_order.php?id=<?php echo $value['order_id'] ?>" class="btn btn-danger btn-sm">ยกเลิก</a>
-        </div>
-      </td>
-    </tr>
-    <?php }?>
-  </tbody>
-  
-</table>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
+        <thead>
+          <tr>
+            <th scope="col">ลำดับ</th>
+            <th scope="col">เมนูที่สั่ง</th>
+            <th scope="col">จำนวน</th>
+            <th scope="col">ราคา/ต่อจาน</th>
+            <th scope="col">ราคารวม</th>
+            <th scope="col">Manage</th>
+          </tr>
+        </thead>
+        <tbody>
+        <?php 
+        $table_id = $_SESSION['table_id'];
+        $sql = "SELECT *, (price * product_qty) as total_price FROM `orders` INNER JOIN product ON orders.product_id = product.product_id WHERE orders.table_id = $table_id;";
+        $query = mysqli_query($connection, $sql);
+        $i = 1;
+        $total_price = 0;
+        ?>
+          <?php foreach ($query as $value) { ?>
+            <tr>
+              <th scope="row"><?php echo $i++; ?></th>
+              <td><?php echo$value['product_name']?></td>
+              <td><?php echo$value['product_qty']?></td>
+              <td><?php echo$value['price']?></td>
+              <td><?php echo$value['total_price']?></td>
+              <?php $total_price += $value['total_price']; ?>
+              <td>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                <a href="delect_order.php?id=<?php echo $value['order_id'] ?>" class="btn btn-danger btn-sm" onclick="return confirmDelete();">ยกเลิก</a>
+
+                </div>
+              </td>
+            </tr>
+          <?php }?>
+          <tr>
+            <td colspan="4"><strong>รวมทั้งหมด</strong></td>
+            <td><strong><?php echo $total_price ?></strong></td>
+            <td></td>
+          </tr>
+        </tbody>
+        </table>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+  </div>
+</div>
+
   </div>
 </div>
 
@@ -179,6 +188,12 @@ if (@$_SESSION['table_id'] == "") {
     });
   });
 </script>
+<script>
+function confirmDelete() {
+    return confirm("คุณต้องการลบรายการนี้ใช่หรือไม่?");
+}
+</script>
+
 </body>
 
 </html>

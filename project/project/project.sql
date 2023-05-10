@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 17, 2023 at 03:39 AM
--- Server version: 10.4.27-MariaDB
--- PHP Version: 8.0.25
+-- Generation Time: May 10, 2023 at 04:38 AM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.1.17
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,8 +18,23 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `project`
+-- Database: `food`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bill`
+--
+
+CREATE TABLE `bill` (
+  `id` int(11) NOT NULL,
+  `table_id` int(11) NOT NULL,
+  `product_name` varchar(255) NOT NULL,
+  `product_qty` int(11) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `total_price` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -39,8 +54,9 @@ CREATE TABLE `category` (
 INSERT INTO `category` (`category_id`, `category_name`) VALUES
 (1, 'แกง,ต้ม'),
 (2, 'อาหารจานเดียว'),
-(4, 'อาหารอีสาน'),
-(5, 'อาหารจีน');
+(6, 'อาหารเวียดนาม'),
+(7, 'Vietname foods'),
+(8, 'Thai foods');
 
 -- --------------------------------------------------------
 
@@ -71,16 +87,9 @@ CREATE TABLE `orders` (
   `order_id` int(10) NOT NULL,
   `table_id` int(10) NOT NULL,
   `product_id` int(11) NOT NULL,
-  `product_qty` int(10) NOT NULL
+  `product_qty` int(10) NOT NULL,
+  `status` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `orders`
---
-
-INSERT INTO `orders` (`order_id`, `table_id`, `product_id`, `product_qty`) VALUES
-(1, 1, 1, 2),
-(20, 1, 9, 2);
 
 -- --------------------------------------------------------
 
@@ -105,14 +114,33 @@ INSERT INTO `product` (`product_id`, `product_name`, `product_desc`, `price`, `i
 (9, 'กะเพราไข่ดาว', 'เผ็ดมาก', '50', 'https://img.freepik.com/free-photo/basil-minced-pork-with-rice-fried-egg_1150-27369.jpg?w=1380&t=st=1678089818~exp=1678090418~hmac=4afe4caffa7aaee7ed514034e5416320f7857810555dc8856a1ea7b147d64e9e', 2),
 (10, 'ต้มยำกุ้ง', 'ใส่กะทิ', '80', 'https://img.freepik.com/premium-photo/tom-yum-soup-thai-food_52590-41.jpg?w=826', 1),
 (11, 'ผัดไทย', 'นี่คืออาหารไทย', '50', 'https://img.freepik.com/free-photo/shrimp-pad-thai-white-background_1150-41802.jpg?size=626&ext=jpg&ga=GA1.2.796651217.1675394203&semt=sph', 2),
-(15, 'ข้าวผัดไข่', 'ข้าวผัดไข่ใส่หมู', '50', '', 2),
-(16, 'HeadPhon', 'ZCzxc', '50', 'https://img.freepik.com/free-photo/stir-fried-kale-spicy-crispy-pork-wooden-table-thai-food-concept_1150-26549.jpg?w=1380&t=st=1678090401~exp=1678091001~hmac=ec7e776336ff22e0da9a76a4e3b4d30e2c1e63bf08d0b2275307c7c459d6b3ad', 0),
-(17, 'sa', 'sdasdsadsd', '30', 'https://cdn2.cellphones.com.vn/358x358,webp,q100/media/catalog/product/i/p/ipad-2022-hero-blue-wifi-select.png', 1),
-(18, 'sadsads', 'sadasdasd', '1234', 'https://cdn2.cellphones.com.vn/358x358,webp,q100/media/catalog/product/i/p/ipad-2022-hero-blue-wifi-select.png', 1),
-(19, 'sadasdsad', 'sadasd', '123', 'https://img.freepik.com/free-photo/stir-fried-kale-spicy-crispy-pork-wooden-table-thai-food-concept_1150-26549.jpg?w=1380&t=st=1678090401~exp=1678091001~hmac=ec7e776336ff22e0da9a76a4e3b4d30e2c1e63bf08d0b2275307c7c459d6b3ad', 1),
-(20, 'ewqeqwewqe', 'weqwewqe', '123', 'https://img.freepik.com/free-photo/stir-fried-kale-spicy-crispy-pork-wooden-table-thai-food-concept_1150-26549.jpg?w=1380&t=st=1678090401~exp=1678091001~hmac=ec7e776336ff22e0da9a76a4e3b4d30e2c1e63bf08d0b2275307c7c459d6b3ad', 2),
-(21, 'ewqeqweqwe', 'qweqwewq', '50', 'https://img.freepik.com/free-photo/stir-fried-kale-spicy-crispy-pork-wooden-table-thai-food-concept_1150-26549.jpg?w=1380&t=st=1678090401~exp=1678091001~hmac=ec7e776336ff22e0da9a76a4e3b4d30e2c1e63bf08d0b2275307c7c459d6b3ad', 2),
-(22, 'ผัดไทย', 'sdas', '60', 'https://img.freepik.com/free-photo/stir-fried-kale-spicy-crispy-pork-wooden-table-thai-food-concept_1150-26549.jpg?w=1380&t=st=1678090401~exp=1678091001~hmac=ec7e776336ff22e0da9a76a4e3b4d30e2c1e63bf08d0b2275307c7c459d6b3ad', 2);
+(22, 'กะเพราหมูกรอบ', 'Thai Foods', '60', 'https://img.freepik.com/free-photo/stir-fried-kale-spicy-crispy-pork-wooden-table-thai-food-concept_1150-26549.jpg?w=1380&t=st=1678090401~exp=1678091001~hmac=ec7e776336ff22e0da9a76a4e3b4d30e2c1e63bf08d0b2275307c7c459d6b3ad', 2),
+(23, 'Pho', 'Vietname foods', '150', 'https://upload.wikimedia.org/wikipedia/commons/8/80/Typicalbeefpho.jpg', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `receipt`
+--
+
+CREATE TABLE `receipt` (
+  `receipt_id` int(11) NOT NULL,
+  `table_id` int(10) DEFAULT NULL,
+  `total_price` int(6) DEFAULT NULL,
+  `date` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `receipt`
+--
+
+INSERT INTO `receipt` (`receipt_id`, `table_id`, `total_price`, `date`) VALUES
+(1, 1, 21323, '2023-05-02'),
+(2, 1, 520, '0000-00-00'),
+(3, 1, 250, '0000-00-00'),
+(4, 1, 150, '2023-05-09'),
+(5, 1, 150, '2023-05-09'),
+(6, 1, 900, '2023-05-10');
 
 -- --------------------------------------------------------
 
@@ -167,6 +195,12 @@ INSERT INTO `users` (`user_id`, `username`, `password`, `fullname`, `phone`, `em
 --
 
 --
+-- Indexes for table `bill`
+--
+ALTER TABLE `bill`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `category`
 --
 ALTER TABLE `category`
@@ -185,6 +219,12 @@ ALTER TABLE `product`
   ADD PRIMARY KEY (`product_id`);
 
 --
+-- Indexes for table `receipt`
+--
+ALTER TABLE `receipt`
+  ADD PRIMARY KEY (`receipt_id`);
+
+--
 -- Indexes for table `tables`
 --
 ALTER TABLE `tables`
@@ -201,22 +241,34 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `bill`
+--
+ALTER TABLE `bill`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `category_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `category_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `order_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
+-- AUTO_INCREMENT for table `receipt`
+--
+ALTER TABLE `receipt`
+  MODIFY `receipt_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tables`

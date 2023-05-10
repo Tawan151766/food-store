@@ -8,6 +8,30 @@ if (@$_SESSION['username'] == "") {
 }
 ?>
 <body>
+  <style>
+    .btn-success {
+  background-color: #28a745; /* กำหนดสีพื้นหลังปุ่มเป็นเขียว */
+  color: #fff; /* กำหนดสีตัวอักษรในปุ่มเป็นขาว */
+}
+
+.btn-success:hover {
+  background-color: #218838; /* กำหนดสีพื้นหลังปุ่มเมื่อเมาส์ hover อยู่ที่ปุ่ม */
+  color: #fff; /* กำหนดสีตัวอักษรในปุ่มเมื่อเมาส์ hover อยู่ที่ปุ่ม */
+}
+
+
+  </style>
+  <script>
+    function changeButtonColor() {
+  // เลือก element ที่มี id เป็น myBtn
+  var btn = document.getElementById("myBtn");
+  
+  // เปลี่ยนค่า style ของปุ่มเพื่อเปลี่ยนสีพื้นหลังและสีตัวอักษร
+  btn.style.backgroundColor = "#ffc107";
+  btn.style.color = "#000";
+}
+
+  </script>
 <div class="container">
 <div class="container text-center mt-3">
         <h1>Management Product</h1>
@@ -24,9 +48,31 @@ if (@$_SESSION['username'] == "") {
           </div>
               </div>
                   <div class="d-flex justify-content-end">
-                  <a class="me-2 btn btn-danger" href="logout.php">LOGOUT</a>
+                  <a class="me-2 btn btn-danger" href="logout.php">LOGOUT</a> 
+                  <a class="me-2 btn btn-primary" href="receipt.php">Receipt</a> 
           </div>
               </div>
+              <div class="container mt-3">
+  <div class="row">
+    <div class="col-md-6">
+      <form action="bill.php" method="get">
+        <div class="input-group mb-3">
+          <select class="form-select" name="table">
+            <?php $sql = "SELECT * FROM `tables`;";
+  $query = mysqli_query($connection, $sql);
+  $i = 1; ?>
+    <option selected>เลือกโต๊ะสำหรับชำระบริการ</option>
+  <?php foreach ($query as $value) { ?>
+        <option value="<?php echo$value['table_id']?>"><?php echo$value['table_name']?></option>
+        <?php } ?>
+    </select>
+          <button type="submit" class="btn btn-primary">ค้นหา</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <table class="table shadow mt-3 rounded text-center">
   <thead>
     <tr>
@@ -40,11 +86,18 @@ if (@$_SESSION['username'] == "") {
     </tr>
   </thead>
   <tbody>
-  <?php $sql = "SELECT * FROM `orders` INNER JOIN product ON orders.product_id = product.product_id;";
-  $query = mysqli_query($connection, $sql);
-  $i = 1; ?>
+
     <tr>
-    
+    <!-- Check if table is empty -->
+<?php
+  $sql = "SELECT * FROM `orders` INNER JOIN product ON orders.product_id = product.product_id WHERE orders.status = '';";
+  $query = mysqli_query($connection, $sql);
+  $rowcount = mysqli_num_rows($query);
+  $i = 1;
+  if($rowcount == 0){
+    echo '<div class="container mt-3 text-danger"><h1>ยังไม่มีออเดอร์</h1></div>';
+  }
+?>
   <?php foreach ($query as $value) { ?>
       <th scope="row"><?php echo $i++; ?></th>
       <td><?php echo$value['table_id']?></td>
@@ -53,7 +106,7 @@ if (@$_SESSION['username'] == "") {
       <td><img style="width: 70px;;height: 70px;object-fit: cover;" src="<?php echo$value['img_link']?>" class="card-img-top" alt="..."></td>
       <td>
         <div class="btn-group" role="group" aria-label="Basic example">
-          <a href="delect_list.php?id=<?php echo $value['order_id'] ?>" class="btn btn-success btn-sm">ออเดอร์สำเร็จ</a>
+        <a href="order-status.php?id=<?php echo $value['order_id'] ?>" class="btn btn-success text-white">ออเดอร์สำเร็จ</a>
         </div>
       </td>
     </tr>
@@ -62,6 +115,7 @@ if (@$_SESSION['username'] == "") {
   
 </table>
 </div>
+
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
