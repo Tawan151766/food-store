@@ -112,7 +112,7 @@ if (@$_SESSION['table_id'] == "") {
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel"><?php echo$_SESSION['table_name']?></h1>
@@ -149,7 +149,12 @@ if (@$_SESSION['table_id'] == "") {
               <?php $total_price += $value['total_price']; ?>
               <td>
                 <div class="btn-group" role="group" aria-label="Basic example">
-                <a href="delect_order.php?id=<?php echo $value['order_id'] ?>" class="btn btn-danger btn-sm" onclick="return confirmDelete();">ยกเลิก</a>
+                <?php if ($value['status'] == 'success'): ?>
+    <a class="btn btn-success btn-sm">เสริฟเเล้ว</a>
+<?php else: ?>
+    <a href="delect_order.php?id=<?php echo $value['order_id']; ?>" class="btn btn-danger btn-sm" onclick="return confirmDelete();">ยกเลิก</a>
+<?php endif; ?>
+
 
                 </div>
               </td>
